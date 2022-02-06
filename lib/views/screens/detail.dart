@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:get/get.dart';
+import 'package:parkingsystem/controllers/home/exit_controller.dart';
 import 'package:parkingsystem/views/components/custom%20_app_bar.dart';
 import 'package:parkingsystem/views/components/cutom_drawer.dart';
 
@@ -11,184 +13,209 @@ class DetailScreen extends StatelessWidget {
         backgroundColor: Colors.white,
         appBar: customAppBar(),
         drawer: const CustomDrawer(),
-        body: SafeArea(
-            child: Padding(
-                padding:
-                    const EdgeInsets.symmetric(vertical: 10, horizontal: 20),
-                child: Column(
-                  children: [
-                    const SizedBox(
-                      height: 30,
-                    ),
-                    Container(
-                      margin: const EdgeInsets.symmetric(horizontal: 10),
-                      padding: const EdgeInsets.symmetric(
-                          vertical: 20, horizontal: 25),
-                      decoration: BoxDecoration(
-                        borderRadius: BorderRadius.circular(10),
-                        color: Colors.white,
-                        boxShadow: const [
-                          BoxShadow(
-                            color: Color(0x60000000),
-                            offset: Offset(0, 6),
-                            blurRadius: 6,
-                          ),
-                        ],
+        body: GetBuilder<ExitController>(builder: (controller) {
+          return SafeArea(
+              child: Padding(
+                  padding:
+                      const EdgeInsets.symmetric(vertical: 10, horizontal: 20),
+                  child: Column(
+                    children: [
+                      const SizedBox(
+                        height: 30,
                       ),
-                      width: MediaQuery.of(context).size.width,
-                      child: Row(
-                        mainAxisAlignment: MainAxisAlignment.center,
-                        children: [
-                          Column(
-                            crossAxisAlignment: CrossAxisAlignment.start,
-                            children: const [
-                              Text(
-                                'Vehicle No:',
+                      controller.isLoading
+                          ? Container(
+                              padding: const EdgeInsets.symmetric(
+                                  vertical: 20, horizontal: 25),
+                              margin:
+                                  const EdgeInsets.symmetric(horizontal: 10),
+                              decoration: BoxDecoration(
+                                borderRadius: BorderRadius.circular(10),
+                                color: Colors.white,
+                                boxShadow: const [
+                                  BoxShadow(
+                                    color: Color(0x60000000),
+                                    offset: Offset(0, 6),
+                                    blurRadius: 6,
+                                  ),
+                                ],
+                              ),
+                              child: const Text(
+                                'Loading',
                                 style: TextStyle(
-                                    fontSize: 22, color: Color(0xff154C79)),
+                                    fontSize: 16, color: Color(0xff154C79)),
                               ),
-                              SizedBox(
-                                height: 15,
+                            )
+                          : Container(
+                              margin:
+                                  const EdgeInsets.symmetric(horizontal: 10),
+                              padding: const EdgeInsets.symmetric(
+                                  vertical: 20, horizontal: 25),
+                              decoration: BoxDecoration(
+                                borderRadius: BorderRadius.circular(10),
+                                color: Colors.white,
+                                boxShadow: const [
+                                  BoxShadow(
+                                    color: Color(0x60000000),
+                                    offset: Offset(0, 6),
+                                    blurRadius: 6,
+                                  ),
+                                ],
                               ),
-                              Text(
-                                'Vehicle Brand:',
-                                style: TextStyle(
-                                    fontSize: 22, color: Color(0xff154C79)),
+                              width: MediaQuery.of(context).size.width,
+                              child: Row(
+                                mainAxisAlignment: MainAxisAlignment.center,
+                                children: [
+                                  Column(
+                                    crossAxisAlignment:
+                                        CrossAxisAlignment.start,
+                                    children: const [
+                                      Text(
+                                        'Vehicle No:',
+                                        style: TextStyle(
+                                            fontSize: 16,
+                                            color: Color(0xff154C79)),
+                                      ),
+                                      SizedBox(
+                                        height: 15,
+                                      ),
+                                      Text(
+                                        'Vehicle Brand:',
+                                        style: TextStyle(
+                                            fontSize: 16,
+                                            color: Color(0xff154C79)),
+                                      ),
+                                      SizedBox(
+                                        height: 15,
+                                      ),
+                                      Text(
+                                        'Entry time:',
+                                        style: TextStyle(
+                                            fontSize: 16,
+                                            color: Color(0xff154C79)),
+                                      ),
+                                      SizedBox(
+                                        height: 15,
+                                      ),
+                                      Text(
+                                        'Exit time:',
+                                        style: TextStyle(
+                                            fontSize: 16,
+                                            color: Color(0xff154C79)),
+                                      ),
+                                      SizedBox(
+                                        height: 15,
+                                      ),
+                                      Text(
+                                        'Total time:',
+                                        style: TextStyle(
+                                            fontSize: 16,
+                                            color: Color(0xff154C79)),
+                                      ),
+                                      SizedBox(
+                                        height: 15,
+                                      ),
+                                      Text(
+                                        'Total Cost:',
+                                        style: TextStyle(
+                                            fontSize: 16,
+                                            color: Color(0xff154C79),
+                                            fontWeight: FontWeight.bold),
+                                      ),
+                                    ],
+                                  ),
+                                  const SizedBox(
+                                    width: 10,
+                                  ),
+                                  Column(
+                                    crossAxisAlignment:
+                                        CrossAxisAlignment.start,
+                                    children: [
+                                      Text(
+                                        controller
+                                            .vehicleOut['vehicle_number']!,
+                                        style: const TextStyle(
+                                            fontSize: 16,
+                                            color: Color(0xff154C79)),
+                                      ),
+                                      const SizedBox(
+                                        height: 15,
+                                      ),
+                                      Text(
+                                        controller.vehicleOut['brand']!,
+                                        style: const TextStyle(
+                                            fontSize: 16,
+                                            color: Color(0xff154C79)),
+                                      ),
+                                      const SizedBox(
+                                        height: 15,
+                                      ),
+                                      Text(
+                                        controller.vehicleOut['in_time']!,
+                                        style: const TextStyle(
+                                            fontSize: 16,
+                                            color: Color(0xff154C79)),
+                                      ),
+                                      const SizedBox(
+                                        height: 15,
+                                      ),
+                                      Text(
+                                        controller.vehicleOut['out_time']!,
+                                        style: const TextStyle(
+                                            fontSize: 16,
+                                            color: Color(0xff154C79)),
+                                      ),
+                                      const SizedBox(
+                                        height: 15,
+                                      ),
+                                      Text(
+                                        controller.vehicleOut['time_parked']!,
+                                        style: const TextStyle(
+                                            fontSize: 16,
+                                            color: Color(0xff154C79)),
+                                      ),
+                                      const SizedBox(
+                                        height: 15,
+                                      ),
+                                      Text(
+                                        'Rs. ' +
+                                            controller.vehicleOut['cost']!
+                                                .toString(),
+                                        style: const TextStyle(
+                                            fontSize: 16,
+                                            color: Color(0xff157915),
+                                            fontWeight: FontWeight.bold),
+                                      ),
+                                    ],
+                                  ),
+                                ],
                               ),
-                              SizedBox(
-                                height: 15,
-                              ),
-                              Text(
-                                'Parking Date:',
-                                style: TextStyle(
-                                    fontSize: 22, color: Color(0xff154C79)),
-                              ),
-                              SizedBox(
-                                height: 15,
-                              ),
-                              Text(
-                                'Entry time:',
-                                style: TextStyle(
-                                    fontSize: 22, color: Color(0xff154C79)),
-                              ),
-                              SizedBox(
-                                height: 15,
-                              ),
-                              Text(
-                                'Exit time:',
-                                style: TextStyle(
-                                    fontSize: 22, color: Color(0xff154C79)),
-                              ),
-                              SizedBox(
-                                height: 15,
-                              ),
-                              Text(
-                                'Total time:',
-                                style: TextStyle(
-                                    fontSize: 22, color: Color(0xff154C79)),
-                              ),
-                              SizedBox(
-                                height: 15,
-                              ),
-                              Text(
-                                'Total Cost:',
-                                style: TextStyle(
-                                    fontSize: 22,
-                                    color: Color(0xff154C79),
-                                    fontWeight: FontWeight.bold),
-                              ),
-                            ],
-                          ),
-                          const SizedBox(
-                            width: 10,
-                          ),
-                          Column(
-                            crossAxisAlignment: CrossAxisAlignment.start,
-                            children: const [
-                              Text(
-                                '18020',
-                                style: TextStyle(
-                                    fontSize: 22, color: Color(0xff154C79)),
-                              ),
-                              SizedBox(
-                                height: 15,
-                              ),
-                              Text(
-                                'Bullet',
-                                style: TextStyle(
-                                    fontSize: 22, color: Color(0xff154C79)),
-                              ),
-                              SizedBox(
-                                height: 15,
-                              ),
-                              Text(
-                                '2020/01/22',
-                                style: TextStyle(
-                                    fontSize: 22, color: Color(0xff154C79)),
-                              ),
-                              SizedBox(
-                                height: 15,
-                              ),
-                              Text(
-                                '1:20 PM',
-                                style: TextStyle(
-                                    fontSize: 22, color: Color(0xff154C79)),
-                              ),
-                              SizedBox(
-                                height: 15,
-                              ),
-                              Text(
-                                '2:20 PM',
-                                style: TextStyle(
-                                    fontSize: 22, color: Color(0xff154C79)),
-                              ),
-                              SizedBox(
-                                height: 15,
-                              ),
-                              Text(
-                                '1 Hour',
-                                style: TextStyle(
-                                    fontSize: 22, color: Color(0xff154C79)),
-                              ),
-                              SizedBox(
-                                height: 15,
-                              ),
-                              Text(
-                                'Rs. 10',
-                                style: TextStyle(
-                                    fontSize: 22,
-                                    color: Color(0xff157915),
-                                    fontWeight: FontWeight.bold),
-                              ),
-                            ],
-                          ),
-                        ],
+                            ),
+                      const SizedBox(
+                        height: 35,
                       ),
-                    ),
-                    const SizedBox(
-                      height: 35,
-                    ),
-                    Center(
-                      child: InkWell(
-                        onTap: () {},
-                        child: Container(
-                          decoration: const BoxDecoration(
-                              borderRadius:
-                                  BorderRadius.all(Radius.circular(10)),
-                              color: Color(0xff154C79)),
-                          height: 45,
-                          width: 110,
-                          child: const Center(
-                            child: Text(
-                              'Proceed',
-                              style:
-                                  TextStyle(fontSize: 17, color: Colors.white),
+                      Center(
+                        child: InkWell(
+                          onTap: () {},
+                          child: Container(
+                            decoration: const BoxDecoration(
+                                borderRadius:
+                                    BorderRadius.all(Radius.circular(10)),
+                                color: Color(0xff154C79)),
+                            height: 45,
+                            width: 110,
+                            child: const Center(
+                              child: Text(
+                                'Proceed',
+                                style: TextStyle(
+                                    fontSize: 17, color: Colors.white),
+                              ),
                             ),
                           ),
                         ),
                       ),
-                    ),
-                  ],
-                ))));
+                    ],
+                  )));
+        }));
   }
 }

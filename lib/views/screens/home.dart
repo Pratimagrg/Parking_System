@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:parkingsystem/controllers/home/entry_controller.dart';
 import 'package:parkingsystem/views/components/custom%20_app_bar.dart';
 import 'package:parkingsystem/views/components/cutom_drawer.dart';
 import 'package:parkingsystem/views/screens/entry.dart';
@@ -7,7 +8,8 @@ import 'package:parkingsystem/views/screens/entrylist.dart';
 import 'package:parkingsystem/widgets/inout_btn.dart';
 
 class HomeScreen extends StatelessWidget {
-  const HomeScreen({Key? key}) : super(key: key);
+  HomeScreen({Key? key}) : super(key: key);
+  final categoryController = Get.put(EntryContoller());
 
   @override
   Widget build(BuildContext context) {
@@ -34,7 +36,7 @@ class HomeScreen extends StatelessWidget {
             InOutClass(
               imgName: 'out',
               onPress: () {
-                Get.to(const EntryListScreen());
+                Get.to(EntryListScreen());
               },
             ),
           ],

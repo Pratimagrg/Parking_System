@@ -5,8 +5,8 @@ import 'package:parkingsystem/views/components/custom%20_app_bar.dart';
 import 'package:parkingsystem/views/components/cutom_drawer.dart';
 import 'package:parkingsystem/views/screens/detail.dart';
 
-class EntryListScreen extends StatelessWidget {
-  EntryListScreen({Key? key}) : super(key: key);
+class History extends StatelessWidget {
+  History({Key? key}) : super(key: key);
 
   final exitController = Get.put(ExitController());
   @override
@@ -36,41 +36,8 @@ class EntryListScreen extends StatelessWidget {
                     ),
                     Column(
                       children: controller.vehicles
-                          .where((element) => element['out_time'] == null)
                           .map(
-                            (e) => GestureDetector(
-                              onTap: () {
-                                showDialog(
-                                    context: context,
-                                    builder: (context) => AlertDialog(
-                                          title: const Text('Vehicle Out?'),
-                                          content: const Text(
-                                              'Are you sure you want to checkout the vehicle?'),
-                                          actions: [
-                                            RaisedButton(
-                                              onPressed: () async {
-                                                controller.calculateVehicleOut(
-                                                    e['number']);
-                                                Get.to(DetailScreen());
-                                              },
-                                              child: const Text('Yes'),
-                                            ),
-                                            RaisedButton(
-                                              color: Colors.red,
-                                              onPressed: () {
-                                                Navigator.pop(context);
-                                              },
-                                              child: const Text(
-                                                'Cancel',
-                                                style: TextStyle(
-                                                    color: Colors.white),
-                                              ),
-                                            ),
-                                          ],
-                                        ));
-                              },
-                              child: VehicleList(vehicle: e),
-                            ),
+                            (e) => VehicleList(vehicle: e),
                           )
                           .toList(),
                     ),
@@ -142,6 +109,4 @@ class VehicleList extends StatelessWidget {
       ),
     );
   }
-
- 
 }
