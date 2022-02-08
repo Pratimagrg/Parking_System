@@ -17,7 +17,7 @@ class ExitController extends GetxController {
     "cost_per_hour": "",
     "cost": ""
   };
-  bool isLoading = false;
+  var isLoading = false.obs;
 
   @override
   void onInit() {
@@ -27,6 +27,7 @@ class ExitController extends GetxController {
   }
 
   fetchMyVehicles() async {
+    isLoading.value = true;
     var user = await SharedPrefs().getUser();
     var decodeUser = json.decode(user);
     var url = Uri.parse(baseUrl + 'my_vehicles.php');
@@ -34,16 +35,19 @@ class ExitController extends GetxController {
       'user_id': decodeUser['id'],
     });
     var res = json.decode(response.body);
+    // vehicles = [];
+
     if (res['success']) {
       vehicles = res['data'];
     } else {
       customSnackbar('Failed to Fetch', "Something went wrong!", 'error');
     }
+    isLoading.value = false;
     update();
   }
 
   calculateVehicleOut(id) async {
-    isLoading = true;
+    isLoading.value = true;
     update();
     var url = Uri.parse(baseUrl + 'vehicle_out.php');
     var response = await http.post(url, body: {
@@ -55,7 +59,7 @@ class ExitController extends GetxController {
     } else {
       customSnackbar('Failed to Fetch', "Something went wrong!", 'error');
     }
-    isLoading = false;
+    isLoading.value = false;
     update();
   }
 }

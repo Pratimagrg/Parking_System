@@ -1,1 +1,1 @@
-const baseUrl = "http://192.168.1.73/parking_system/";
+const baseUrl = "http://192.168.1.74/parking_system/";

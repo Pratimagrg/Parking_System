@@ -3,6 +3,7 @@ import 'package:get/get.dart';
 import 'package:parkingsystem/controllers/home/exit_controller.dart';
 import 'package:parkingsystem/views/components/custom%20_app_bar.dart';
 import 'package:parkingsystem/views/components/cutom_drawer.dart';
+import 'package:parkingsystem/views/screens/payment/payment_selector_screen.dart';
 
 class DetailScreen extends StatelessWidget {
   const DetailScreen({Key? key}) : super(key: key);
@@ -23,7 +24,7 @@ class DetailScreen extends StatelessWidget {
                       const SizedBox(
                         height: 30,
                       ),
-                      controller.isLoading
+                      controller.isLoading.value
                           ? Container(
                               padding: const EdgeInsets.symmetric(
                                   vertical: 20, horizontal: 25),
@@ -196,7 +197,9 @@ class DetailScreen extends StatelessWidget {
                       ),
                       Center(
                         child: InkWell(
-                          onTap: () {},
+                          onTap: () {
+                            Get.to(PaymentSelector());
+                          },
                           child: Container(
                             decoration: const BoxDecoration(
                                 borderRadius:

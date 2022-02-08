@@ -11,78 +11,79 @@ class EntryListScreen extends StatelessWidget {
   final exitController = Get.put(ExitController());
   @override
   Widget build(BuildContext context) {
+    exitController.fetchMyVehicles();
     return Scaffold(
         backgroundColor: Colors.white,
         appBar: customAppBar(),
         drawer: const CustomDrawer(),
-        body: GetBuilder<ExitController>(builder: (controller) {
-          return SafeArea(
-            child: SingleChildScrollView(
-              child: Padding(
-                padding:
-                    const EdgeInsets.symmetric(vertical: 10, horizontal: 20),
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    const SizedBox(
-                      height: 15,
-                    ),
-                    const Text(
-                      'List of the parked vehicles.',
-                      style: TextStyle(fontSize: 20, color: Color(0xff154C79)),
-                    ),
-                    const SizedBox(
-                      height: 20,
-                    ),
-                    Column(
-                      children: controller.vehicles
-                          .where((element) => element['out_time'] == null)
-                          .map(
-                            (e) => GestureDetector(
-                              onTap: () {
-                                showDialog(
-                                    context: context,
-                                    builder: (context) => AlertDialog(
-                                          title: const Text('Vehicle Out?'),
-                                          content: const Text(
-                                              'Are you sure you want to checkout the vehicle?'),
-                                          actions: [
-                                            RaisedButton(
-                                              onPressed: () async {
-                                                controller.calculateVehicleOut(
-                                                    e['number']);
-                                                Get.to(DetailScreen());
-                                              },
-                                              child: const Text('Yes'),
-                                            ),
-                                            RaisedButton(
-                                              color: Colors.red,
-                                              onPressed: () {
-                                                Navigator.pop(context);
-                                              },
-                                              child: const Text(
-                                                'Cancel',
-                                                style: TextStyle(
-                                                    color: Colors.white),
-                                              ),
-                                            ),
-                                          ],
-                                        ));
-                              },
-                              child: VehicleList(vehicle: e),
-                            ),
-                          )
-                          .toList(),
-                    ),
-                    const SizedBox(
-                      height: 35,
-                    ),
-                  ],
-                ),
+        body: SafeArea(
+          child: SingleChildScrollView(
+            child: Padding(
+              padding: const EdgeInsets.symmetric(vertical: 10, horizontal: 20),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  const SizedBox(
+                    height: 15,
+                  ),
+                  const Text(
+                    'List of the parked vehicles.',
+                    style: TextStyle(fontSize: 20, color: Color(0xff154C79)),
+                  ),
+                  const SizedBox(
+                    height: 20,
+                  ),
+                  Obx(() => exitController.isLoading.value
+                      ? const Center(child: CircularProgressIndicator())
+                      : Column(
+                          children: exitController.vehicles
+                              .where((element) => element['is_paid'] == null)
+                              .map((e) => vechiletile(e, context))
+                              .toList(),
+                        )),
+                  const SizedBox(
+                    height: 35,
+                  ),
+                ],
               ),
             ),
-          );
-        }));
+          ),
+        ));
+  }
+
+  Widget vechiletile(e, context) {
+    return GestureDetector(
+      onTap: () {
+        showDialog(
+            context: context,
+            builder: (context) => AlertDialog(
+                  title: const Text('Vehicle Out?'),
+                  content: const Text(
+                      'Are you sure you want to checkout the vehicle?'),
+                  actions: [
+                    RaisedButton(
+                      onPressed: () async {
+                        exitController.calculateVehicleOut(e['number']);
+                        Navigator.pop(context);
+                        Get.to(DetailScreen());
+                      },
+                      child: const Text('Yes'),
+                    ),
+                    RaisedButton(
+                      color: Colors.red,
+                      onPressed: () {
+                        Navigator.pop(context);
+                      },
+                      child: const Text(
+                        'Cancel',
+                        style: TextStyle(color: Colors.white),
+                      ),
+                    ),
+                  ],
+                ));
+      },
+      child: VehicleList(vehicle: e),
+    );
   }
 }
 
@@ -142,6 +143,4 @@ class VehicleList extends StatelessWidget {
       ),
     );
   }
-
- 
 }
