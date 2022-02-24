@@ -198,7 +198,8 @@ class DetailScreen extends StatelessWidget {
                       Center(
                         child: InkWell(
                           onTap: () {
-                            Get.to(PaymentSelector());
+                            Get.to(PaymentSelector(
+                                vehicleOut: controller.vehicleOut));
                           },
                           child: Container(
                             decoration: const BoxDecoration(

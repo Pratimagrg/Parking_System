@@ -4,8 +4,9 @@ import 'package:parkingsystem/views/screens/payment/banking.dart';
 import 'package:parkingsystem/views/screens/payment/wallet.dart';
 
 class PaymentSelector extends StatelessWidget {
-  const PaymentSelector({Key? key}) : super(key: key);
+  const PaymentSelector({Key? key, required this.vehicleOut}) : super(key: key);
 
+  final dynamic vehicleOut;
   @override
   Widget build(BuildContext context) {
     return DefaultTabController(
@@ -21,11 +22,11 @@ class PaymentSelector extends StatelessWidget {
             ],
           ),
         ),
-        body: const TabBarView(
+        body: TabBarView(
           children: [
-            WalletPayment(),
-            Banking(paymentType: PaymentType.eBanking),
-            Banking(paymentType: PaymentType.mobileCheckout),
+            WalletPayment(vehicleOut: vehicleOut),
+            const Banking(paymentType: PaymentType.eBanking),
+            const Banking(paymentType: PaymentType.mobileCheckout),
           ],
         ),
       ),

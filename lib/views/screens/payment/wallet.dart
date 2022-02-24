@@ -1,8 +1,12 @@
 import 'package:flutter/material.dart';
+import 'package:get/get.dart';
 import 'package:khalti/khalti.dart';
+import 'package:parkingsystem/controllers/payment/payment_controller.dart';
 
 class WalletPayment extends StatefulWidget {
-  const WalletPayment({Key? key}) : super(key: key);
+  const WalletPayment({Key? key, required this.vehicleOut}) : super(key: key);
+
+  final dynamic vehicleOut;
 
   @override
   State<WalletPayment> createState() => _WalletPaymentState();
@@ -11,7 +15,7 @@ class WalletPayment extends StatefulWidget {
 class _WalletPaymentState extends State<WalletPayment> {
   late final TextEditingController _mobileController, _pinController;
   final GlobalKey<FormState> _formKey = GlobalKey();
-
+  final paymentContoller = Get.put(PaymentController());
   @override
   void initState() {
     super.initState();
@@ -28,94 +32,99 @@ class _WalletPaymentState extends State<WalletPayment> {
 
   @override
   Widget build(BuildContext context) {
-    return Form(
-      key: _formKey,
-      child: ListView(
-        padding: const EdgeInsets.all(16),
-        children: [
-          TextFormField(
-            validator: (v) => (v?.isEmpty ?? true) ? 'Required ' : null,
-            decoration: const InputDecoration(
-              label: Text('Mobile Number'),
-            ),
-            controller: _mobileController,
-          ),
-          TextFormField(
-            obscureText: true,
-            validator: (v) => (v?.isEmpty ?? true) ? 'Required ' : null,
-            decoration: const InputDecoration(
-              label: Text(
-                'Khalti MPIN',
-                style: TextStyle(fontSize: 12),
+    return GetBuilder<PaymentController>(builder: (controller) {
+      return Form(
+        key: _formKey,
+        child: ListView(
+          padding: const EdgeInsets.all(16),
+          children: [
+            TextFormField(
+              validator: (v) => (v?.isEmpty ?? true) ? 'Required ' : null,
+              decoration: const InputDecoration(
+                label: Text('Mobile Number'),
               ),
+              controller: _mobileController,
             ),
-            controller: _pinController,
-          ),
-          const SizedBox(height: 24),
-          ElevatedButton(
-            onPressed: () async {
-              if (!(_formKey.currentState?.validate() ?? false)) return;
-
-              final initiationModel = await Khalti.service.initiatePayment(
-                request: PaymentInitiationRequestModel(
-                  amount: 1000,
-                  mobile: _mobileController.text,
-                  productIdentity: 'mac-mini',
-                  productName: 'Apple Mac Mini',
-                  transactionPin: _pinController.text,
-                  productUrl: 'https://khalti.com/bazaar/mac-mini-16-512-m1',
-                  additionalData: {
-                    'vendor': 'Oliz Store',
-                    'manufacturer': 'Apple Inc.',
-                  },
+            TextFormField(
+              obscureText: true,
+              validator: (v) => (v?.isEmpty ?? true) ? 'Required ' : null,
+              decoration: const InputDecoration(
+                label: Text(
+                  'Khalti MPIN',
+                  style: TextStyle(fontSize: 12),
                 ),
-              );
+              ),
+              controller: _pinController,
+            ),
+            const SizedBox(height: 24),
+            ElevatedButton(
+              onPressed: () async {
+                if (!(_formKey.currentState?.validate() ?? false)) return;
 
-              final otpCode = await showDialog<String>(
-                context: context,
-                barrierDismissible: false,
-                builder: (context) {
-                  String? _otp;
-                  return AlertDialog(
-                    title: const Text('OTP Sent!'),
-                    content: TextField(
-                      decoration: const InputDecoration(
-                        label: Text('OTP Code'),
+                final initiationModel = await Khalti.service.initiatePayment(
+                  request: PaymentInitiationRequestModel(
+                    amount:
+                        int.parse(widget.vehicleOut['cost'].toString()) * 1000,
+                    mobile: _mobileController.text,
+                    productIdentity: widget.vehicleOut['vehicle_number'],
+                    productName: widget.vehicleOut['brand'],
+                    transactionPin: _pinController.text,
+                    productUrl: 'https://khalti.com/bazaar/mac-mini-16-512-m1',
+                    additionalData: {
+                      'vendor': 'Oliz Store',
+                      'manufacturer': 'Apple Inc.',
+                    },
+                  ),
+                );
+
+                final otpCode = await showDialog<String>(
+                  context: context,
+                  barrierDismissible: false,
+                  builder: (context) {
+                    String? _otp;
+                    return AlertDialog(
+                      title: const Text('OTP Sent!'),
+                      content: TextField(
+                        decoration: const InputDecoration(
+                          label: Text('OTP Code'),
+                        ),
+                        onChanged: (v) => _otp = v,
                       ),
-                      onChanged: (v) => _otp = v,
-                    ),
-                    actions: [
-                      SimpleDialogOption(
-                        child: const Text('OK'),
-                        onPressed: () => Navigator.pop(context, _otp),
-                      )
-                    ],
-                  );
-                },
-              );
+                      actions: [
+                        SimpleDialogOption(
+                          child: const Text('OK'),
+                          onPressed: () => Navigator.pop(context, _otp),
+                        )
+                      ],
+                    );
+                  },
+                );
 
-              if (otpCode != null) {
-                try {
-                  final model = await Khalti.service.confirmPayment(
-                    request: PaymentConfirmationRequestModel(
-                      confirmationCode: otpCode,
-                      token: initiationModel.token,
-                      transactionPin: _pinController.text,
-                    ),
-                  );
+                if (otpCode != null) {
+                  try {
+                    final model = await Khalti.service.confirmPayment(
+                      request: PaymentConfirmationRequestModel(
+                        confirmationCode: otpCode,
+                        token: initiationModel.token,
+                        transactionPin: _pinController.text,
+                      ),
+                    );
 
-                  debugPrint(model.toString());
-                } catch (e) {
-                  ScaffoldMessenger.maybeOf(context)?.showSnackBar(
-                    SnackBar(content: Text(e.toString())),
-                  );
+                    // print(model.token);
+                    controller.makePayment(
+                        model.token, widget.vehicleOut['vehicle_number']);
+                  } catch (e) {
+                    ScaffoldMessenger.maybeOf(context)?.showSnackBar(
+                      SnackBar(content: Text(e.toString())),
+                    );
+                  }
                 }
-              }
-            },
-            child: const Text('PAY Rs. 10'),
-          ),
-        ],
-      ),
-    );
+              },
+              child: const Text('Make Payment'),
+            ),
+          ],
+        ),
+      );
+    });
   }
 }

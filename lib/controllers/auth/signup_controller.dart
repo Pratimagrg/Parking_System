@@ -90,10 +90,10 @@ class RegisterController extends GetxController {
     var response = await http.post(url, body: {
       'username': usernameController.text,
       'password': passwordController.text,
-      'email': passwordController.text,
-      'contact': passwordController.text,
-      'name': passwordController.text,
-      'address': passwordController.text,
+      'email': emailController.text,
+      'contact': contactController.text,
+      'name': nameController.text,
+      'address': addressController.text,
     });
     var res = json.decode(response.body);
     if (res['success']) {
